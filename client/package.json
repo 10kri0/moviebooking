@@ -19,7 +19,8 @@
     "react-router-dom": "^6.14.2",
     "react-tailwindcss-select": "^1.8.5",
     "react-toastify": "^9.1.3",
-    "react-use-draggable-scroll": "^0.4.7"
+    "react-use-draggable-scroll": "^0.4.7",
+    "tailwind": "^4.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.18",

@@ -1,0 +1,1 @@
+export const Server_url = "https://moviebooking-hs2r.vercel.app/";
