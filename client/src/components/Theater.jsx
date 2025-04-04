@@ -1,348 +1,313 @@
-import { ArrowsRightLeftIcon, ArrowsUpDownIcon, InformationCircleIcon, UserIcon } from '@heroicons/react/24/outline'
-import axios from 'axios'
-import { useContext, useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import Select from 'react-tailwindcss-select'
-import { toast } from 'react-toastify'
-import { AuthContext } from '../context/AuthContext'
-import Loading from './Loading'
-import Showtimes from './Showtimes'
+import { ArrowsRightLeftIcon, ArrowsUpDownIcon, InformationCircleIcon, UserIcon } from '@heroicons/react/24/outline';
+import axios from 'axios';
+import { useContext, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import Select from 'react-tailwindcss-select';
+import { toast } from 'react-toastify';
+import { AuthContext } from '../context/AuthContext';
+import Loading from './Loading';
+import Showtimes from './Showtimes';
 
 const Theater = ({ theaterId, movies, selectedDate, filterMovie, setSelectedDate }) => {
-	const {
-		register,
-		handleSubmit,
-		reset,
-		setValue,
-		getValues,
-		watch,
-		formState: { errors }
-	} = useForm()
+    const {
+        register,
+        handleSubmit,
+        reset,
+        setValue,
+        watch,
+        formState: { errors },
+    } = useForm();
 
-	const { auth } = useContext(AuthContext)
+    const { auth } = useContext(AuthContext);
+    const [theater, setTheater] = useState({});
+    const [isFetchingTheaterDone, setIsFetchingTheaterDone] = useState(false);
+    const [isAddingShowtime, setIsAddingShowtime] = useState(false);
+    const [selectedMovie, setSelectedMovie] = useState(null);
 
-	const [theater, setTheater] = useState({})
-	const [isFetchingTheaterDone, setIsFetchingTheaterDone] = useState(false)
-	const [isAddingShowtime, SetIsAddingShowtime] = useState(false)
-	const [selectedMovie, setSelectedMovie] = useState(null)
+    const fetchTheater = async () => {
+        try {
+            setIsFetchingTheaterDone(false);
+            const response = auth.role === 'admin'
+                ? await axios.get(`/theater/unreleased/${theaterId}`, {
+                    headers: {
+                        Authorization: `Bearer ${auth.token}`,
+                    },
+                })
+                : await axios.get(`/theater/${theaterId}`);
+            setTheater(response.data.data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsFetchingTheaterDone(true);
+        }
+    };
 
-	const fetchTheater = async (data) => {
-		try {
-			setIsFetchingTheaterDone(false)
-			let response
-			if (auth.role === 'admin') {
-				response = await axios.get(`/theater/unreleased/${theaterId}`, {
-					headers: {
-						Authorization: `Bearer ${auth.token}`
-					}
-				})
-			} else {
-				response = await axios.get(`/theater/${theaterId}`)
-			}
-			// console.log(response.data.data)
-			setTheater(response.data.data)
-		} catch (error) {
-			console.error(error)
-		} finally {
-			setIsFetchingTheaterDone(true)
-		}
-	}
+    useEffect(() => {
+        fetchTheater();
+    }, [theaterId]);
 
-	useEffect(() => {
-		fetchTheater()
-	}, [theaterId])
+    useEffect(() => {
+        setValue('autoIncrease', true);
+        setValue('rounding5', true);
+        setValue('gap', '00:10');
+    }, []);
 
-	useEffect(() => {
-		setValue('autoIncrease', true)
-		setValue('rounding5', true)
-		setValue('gap', '00:10')
-	}, [])
+    const onAddShowtime = async (data) => {
+        try {
+            setIsAddingShowtime(true);
+            if (!data.movie) {
+                toast.error('Please select a movie.', {
+                    position: 'top-center',
+                    autoClose: 2000,
+                    pauseOnHover: false,
+                    theme: 'dark',
+                });
+                return;
+            }
 
-	const onAddShowtime = async (data) => {
-		try {
-			SetIsAddingShowtime(true)
-			if (!data.movie) {
-				toast.error('Please select a movie', {
-					position: 'top-center',
-					autoClose: 2000,
-					pauseOnHover: false
-				})
-				return
-			}
-			let showtime = new Date(selectedDate)
-			const [hours, minutes] = data.showtime.split(':')
-			showtime.setHours(hours, minutes, 0)
-			const response = await axios.post(
-				'/showtime',
-				{ movie: data.movie, showtime, theater: theater._id, repeat: data.repeat, isRelease: data.isRelease },
-				{
-					headers: {
-						Authorization: `Bearer ${auth.token}`
-					}
-				}
-			)
-			// console.log(response.data)
-			fetchTheater()
-			if (data.autoIncrease) {
-				const movieLength = movies.find((movie) => movie._id === data.movie).length
-				const [GapHours, GapMinutes] = data.gap.split(':').map(Number)
-				const nextShowtime = new Date(showtime.getTime() + (movieLength + GapHours * 60 + GapMinutes) * 60000)
-				if (data.rounding5 || data.rounding10) {
-					const totalMinutes = nextShowtime.getHours() * 60 + nextShowtime.getMinutes()
-					const roundedMinutes = data.rounding5
-						? Math.ceil(totalMinutes / 5) * 5
-						: Math.ceil(totalMinutes / 10) * 10
-					let roundedHours = Math.floor(roundedMinutes / 60)
-					const remainderMinutes = roundedMinutes % 60
-					if (roundedHours === 24) {
-						nextShowtime.setDate(nextShowtime.getDate() + 1)
-						roundedHours = 0
-					}
-					setValue(
-						'showtime',
-						`${String(roundedHours).padStart(2, '0')}:${String(remainderMinutes).padStart(2, '0')}`
-					)
-				} else {
-					setValue(
-						'showtime',
-						`${String(nextShowtime.getHours()).padStart(2, '0')}:${String(
-							nextShowtime.getMinutes()
-						).padStart(2, '0')}`
-					)
-				}
-				if (data.autoIncreaseDate) {
-					setSelectedDate(nextShowtime)
-					sessionStorage.setItem('selectedDate', nextShowtime)
-				}
-			}
-			toast.success('Add showtime successful!', {
-				position: 'top-center',
-				autoClose: 2000,
-				pauseOnHover: false
-			})
-		} catch (error) {
-			console.error(error)
-			toast.error('Error', {
-				position: 'top-center',
-				autoClose: 2000,
-				pauseOnHover: false
-			})
-		} finally {
-			SetIsAddingShowtime(false)
-		}
-	}
+            let showtime = new Date(selectedDate);
+            const [hours, minutes] = data.showtime.split(':');
+            showtime.setHours(hours, minutes, 0);
 
-	function rowToNumber(column) {
-		let result = 0
-		for (let i = 0; i < column.length; i++) {
-			const charCode = column.charCodeAt(i) - 64 // Convert character to ASCII and adjust to 1-based index
-			result = result * 26 + charCode
-		}
-		return result
-	}
+            const response = await axios.post(
+                '/showtime',
+                {
+                    movie: data.movie,
+                    showtime,
+                    theater: theater._id,
+                    repeat: data.repeat,
+                    isRelease: data.isRelease,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${auth.token}`,
+                    },
+                },
+            );
 
-	if (!isFetchingTheaterDone) {
-		return <Loading />
-	}
+            fetchTheater();
 
-	return (
-		<div className="flex flex-col">
-			<div className="flex md:justify-between">
-				<h3
-					className={`flex w-fit items-center rounded-tl-2xl bg-gradient-to-br from-gray-800 to-gray-700 px-6 py-0.5 text-2xl font-bold text-white md:rounded-t-2xl md:px-8 ${
-						auth.role !== 'admin' && 'rounded-t-2xl'
-					}`}
-				>
-					{theater.number}
-				</h3>
-				{auth.role === 'admin' && (
-					<div className="flex w-fit flex-col gap-x-3 rounded-tr-2xl bg-gradient-to-br from-indigo-800 to-blue-700 px-4 py-0.5 font-semibold text-white md:flex-row md:gap-x-6 md:rounded-t-2xl md:text-lg md:font-bold">
-						<div className="flex items-center gap-2">
-							<ArrowsUpDownIcon className="h-5 w-5" />
-							{theater?.seatPlan?.row === 'A' ? (
-								<h4>Row : A</h4>
-							) : (
-								<h4>Row : A - {theater?.seatPlan?.row}</h4>
-							)}
-						</div>
-						<div className="flex items-center gap-2">
-							<ArrowsRightLeftIcon className="h-5 w-5" />
-							{theater?.seatPlan?.column === 1 ? (
-								<h4>Column : 1</h4>
-							) : (
-								<h4>Column : 1 - {theater?.seatPlan?.column}</h4>
-							)}
-						</div>
-						<div className="flex items-center gap-2">
-							<UserIcon className="h-5 w-5" />
-							{(rowToNumber(theater.seatPlan.row) * theater.seatPlan.column).toLocaleString('en-US')}{' '}
-							Seats
-						</div>
-					</div>
-				)}
-			</div>
-			<div className="flex flex-col gap-4 rounded-b-md rounded-tr-md bg-gradient-to-br from-indigo-100 to-white py-4 md:rounded-tr-none">
-				{auth.role === 'admin' && (
-					<>
-						<form
-							className="mx-4 flex flex-col gap-x-4 gap-y-2 lg:flex-row"
-							onSubmit={handleSubmit(onAddShowtime)}
-						>
-							<div className="flex grow flex-col gap-2 rounded-lg">
-								<div className="flex flex-col gap-2 rounded-lg lg:flex-row lg:items-stretch">
-									<div className="flex grow-[2] items-center gap-x-2 gap-y-1 lg:flex-col lg:items-start">
-										<label className="whitespace-nowrap text-lg font-semibold leading-5">
-											Movie:
-										</label>
-										<Select
-											value={selectedMovie}
-											options={movies?.map((movie) => ({
-												value: movie._id,
-												label: movie.name
-											}))}
-											onChange={(value) => {
-												setValue('movie', value.value)
-												setSelectedMovie(value)
-											}}
-											isSearchable={true}
-											primaryColor="indigo"
-											classNames={{
-												menuButton: (value) =>
-													'flex font-semibold text-sm border border-gray-300 rounded shadow-sm transition-all duration-300 focus:outline-none bg-white hover:border-gray-400 focus:border-indigo-500 focus:ring focus:ring-indigo-500/20'
-											}}
-										/>
-									</div>
-									<div className="flex items-center gap-x-2 gap-y-1 lg:flex-col lg:items-start">
-										<label className="whitespace-nowrap text-lg font-semibold leading-5">
-											Showtime:
-										</label>
-										<input
-											type="time"
-											className="h-9 w-full rounded bg-white px-2 py-1 font-semibold text-gray-900 drop-shadow-sm"
-											required
-											{...register('showtime', { required: true })}
-										/>
-									</div>
-								</div>
-								<div className="flex flex-col gap-2 rounded-lg lg:flex-row lg:items-stretch">
-									<div className="flex items-center gap-x-2 gap-y-1 lg:flex-col lg:items-start">
-										<label className="whitespace-nowrap text-lg font-semibold leading-5">
-											Repeat (Day):
-										</label>
-										<input
-											type="number"
-											min={1}
-											defaultValue={1}
-											max={31}
-											className="h-9 w-full rounded bg-white px-2 py-1 font-semibold text-gray-900 drop-shadow-sm"
-											required
-											{...register('repeat', { required: true })}
-										/>
-									</div>
-									<label className="flex items-center gap-x-2 gap-y-1 whitespace-nowrap text-lg font-semibold leading-5 lg:flex-col lg:items-start">
-										Release now:
-										<input
-											type="checkbox"
-											className="h-6 w-6 lg:h-9 lg:w-9"
-											{...register('isRelease')}
-										/>
-									</label>
-									<div className="flex flex-col items-start gap-2 lg:flex-row lg:items-end">
-										<p className="font-semibold text-right underline">Auto increase</p>
-										<label
-											className="flex items-center gap-x-2 gap-y-1 whitespace-nowrap font-semibold leading-5 lg:flex-col lg:items-start"
-											title="After add, update showtime value to the movie ending time"
-										>
-											Showtime:
-											<input
-												type="checkbox"
-												className="h-6 w-6 lg:h-9 lg:w-9"
-												{...register('autoIncrease')}
-											/>
-										</label>
-										<label
-											className="flex items-center gap-x-2 gap-y-1 whitespace-nowrap font-semibold leading-5 lg:flex-col lg:items-start"
-											title="After add, update date value to the movie ending time"
-										>
-											Date:
-											<input
-												type="checkbox"
-												className="h-6 w-6 lg:h-9 lg:w-9"
-												disabled={!watch('autoIncrease')}
-												{...register('autoIncreaseDate')}
-											/>
-										</label>
-									</div>
-									<div
-										className="flex items-center gap-x-2 gap-y-1 lg:flex-col lg:items-start"
-										title="Gap between showtimes"
-									>
-										<label className="whitespace-nowrap font-semibold leading-5">Gap:</label>
-										<input
-											type="time"
-											className="h-9 w-full rounded bg-white px-2 py-1 font-semibold text-gray-900 drop-shadow-sm disabled:bg-gray-300"
-											disabled={!watch('autoIncrease')}
-											{...register('gap')}
-										/>
-									</div>
-									<div className="flex flex-col items-start gap-2 lg:flex-row lg:items-end">
-										<p className="font-semibold text-right underline">Rounding</p>
-										<label
-											className="flex items-center gap-x-2 gap-y-1 whitespace-nowrap font-semibold leading-5 lg:flex-col lg:items-start"
-											title="Rounding up to the nearest five minutes"
-										>
-											5-min:
-											<input
-												type="checkbox"
-												className="h-6 w-6 lg:h-9 lg:w-9"
-												disabled={!watch('autoIncrease')}
-												{...register('rounding5', {
-													onChange: () => setValue('rounding10', false)
-												})}
-											/>
-										</label>
-										<label
-											className="flex items-center gap-x-2 gap-y-1 whitespace-nowrap font-semibold leading-5 lg:flex-col lg:items-start"
-											title="Rounding up to the nearest ten minutes"
-										>
-											10-min:
-											<input
-												type="checkbox"
-												className="h-6 w-6 lg:h-9 lg:w-9"
-												disabled={!watch('autoIncrease')}
-												{...register('rounding10', {
-													onChange: () => setValue('rounding5', false)
-												})}
-											/>
-										</label>
-									</div>
-								</div>
-							</div>
-							<button
-								title="Add showtime"
-								disabled={isAddingShowtime}
-								className="whitespace-nowrap rounded-md bg-gradient-to-r from-indigo-600 to-blue-500 px-2 py-1 font-medium text-white drop-shadow-md hover:from-indigo-500 hover:to-blue-400 disabled:from-slate-500 disabled:to-slate-400"
-								type="submit"
-							>
-								ADD +
-							</button>
-						</form>
-						{filterMovie?.name && (
-							<div className="mx-4 flex gap-2 rounded-md bg-gradient-to-r from-indigo-600 to-blue-500 p-2 text-white">
-								<InformationCircleIcon className="h-6 w-6" />
-								{`You are viewing the showtimes of "${filterMovie?.name}"`}
-							</div>
-						)}
-					</>
-				)}
-				<Showtimes
-					showtimes={theater.showtimes}
-					movies={movies}
-					selectedDate={selectedDate}
-					filterMovie={filterMovie}
-				/>
-			</div>
-		</div>
-	)
-}
-export default Theater
+            if (data.autoIncrease) {
+                const movieLength = movies.find((movie) => movie._id === data.movie).length;
+                const [gapHours, gapMinutes] = data.gap.split(':').map(Number);
+                const nextShowtime = new Date(showtime.getTime() + (movieLength + gapHours * 60 + gapMinutes) * 60000);
+
+                if (data.rounding5 || data.rounding10) {
+                    const totalMinutes = nextShowtime.getHours() * 60 + nextShowtime.getMinutes();
+                    const roundedMinutes = data.rounding5
+                        ? Math.ceil(totalMinutes / 5) * 5
+                        : Math.ceil(totalMinutes / 10) * 10;
+                    let roundedHours = Math.floor(roundedMinutes / 60);
+                    const remainderMinutes = roundedMinutes % 60;
+
+                    if (roundedHours === 24) {
+                        nextShowtime.setDate(nextShowtime.getDate() + 1);
+                        roundedHours = 0;
+                    }
+
+                    setValue(
+                        'showtime',
+                        `${String(roundedHours).padStart(2, '0')}:${String(remainderMinutes).padStart(2, '0')}`,
+                    );
+                } else {
+                    setValue(
+                        'showtime',
+                        `${String(nextShowtime.getHours()).padStart(2, '0')}:${String(
+                            nextShowtime.getMinutes(),
+                        ).padStart(2, '0')}`,
+                    );
+                }
+
+                if (data.autoIncreaseDate) {
+                    setSelectedDate(nextShowtime);
+                    sessionStorage.setItem('selectedDate', nextShowtime);
+                }
+            }
+
+            toast.success('Showtime added successfully!', {
+                position: 'top-center',
+                autoClose: 2000,
+                pauseOnHover: false,
+                theme: 'dark',
+            });
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to add showtime.', {
+                position: 'top-center',
+                autoClose: 2000,
+                pauseOnHover: false,
+                theme: 'dark',
+            });
+        } finally {
+            setIsAddingShowtime(false);
+        }
+    };
+
+    if (!isFetchingTheaterDone) {
+        return <Loading />;
+    }
+
+    return (
+        <div className="flex flex-col rounded-lg bg-gradient-to-br from-black via-[#121212] to-[#1a1a2e] shadow-xl">
+       
+            <div className="flex flex-col rounded-t-lg bg-gradient-to-br from-[#222] to-[#333] p-6">
+                <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+                    <div className="flex flex-col items-center rounded-lg bg-gradient-to-br from-[#111] to-[#222] px-6 py-3 shadow-md">
+                        <p className="text-sm text-gray-400">Theater</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-[#ff416c] to-[#ff4b2b] bg-clip-text text-transparent">
+                            {theater.number}
+                        </p>
+                    </div>
+                    {auth.role === 'admin' && (
+                        <div className="flex flex-wrap items-center justify-center gap-4">
+                            <div className="flex items-center gap-2 text-gray-300">
+                                <ArrowsUpDownIcon className="h-5 w-5" />
+                                <p>Row: A - {theater?.seatPlan?.row}</p>
+                            </div>
+                            <div className="flex items-center gap-2 text-gray-300">
+                                <ArrowsRightLeftIcon className="h-5 w-5" />
+                                <p>Column: 1 - {theater?.seatPlan?.column}</p>
+                            </div>
+                            <div className="flex items-center gap-2 text-gray-300">
+                                <UserIcon className="h-5 w-5" />
+                                <p>{(theater?.seatPlan?.row.charCodeAt(0) - 64) * theater?.seatPlan?.column} Seats</p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+            <div className="flex flex-col gap-6 p-6">
+                {auth.role === 'admin' && (
+                    <form className="flex flex-col gap-6" onSubmit={handleSubmit(onAddShowtime)}>
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            <div className="flex flex-col gap-2">
+                                <label className="text-lg font-semibold text-white">Movie:</label>
+                                <Select
+                                    value={selectedMovie}
+                                    options={movies?.map((movie) => ({
+                                        value: movie._id,
+                                        label: movie.name,
+                                    }))}
+                                    onChange={(value) => {
+                                        setValue('movie', value.value);
+                                        setSelectedMovie(value);
+                                    }}
+                                    isSearchable={true}
+                                    primaryColor="indigo"
+                                    classNames={{
+                                        menuButton: () =>
+                                            'flex w-full rounded-lg border border-gray-700 bg-[#222] p-3 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:border-gray-600 focus:border-[#ff416c] focus:ring focus:ring-[#ff416c]/20',
+                                        menu: 'bg-[#222] border border-gray-700 rounded-lg mt-1',
+                                        listItem: ({ isSelected }) =>
+                                            `block px-3 py-2 text-sm text-white transition-all duration-200 hover:bg-[#333] ${
+                                                isSelected ? 'bg-[#ff416c]' : ''
+                                            }`,
+                                    }}
+                                />
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <label className="text-lg font-semibold text-white">Showtime:</label>
+                                <input
+                                    type="time"
+                                    className="w-full rounded-lg border border-gray-700 bg-[#222] p-3 text-sm font-semibold text-white shadow-sm focus:border-[#ff416c] focus:ring focus:ring-[#ff416c]/20"
+                                    required
+                                    {...register('showtime', { required: true })}
+                                />
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <label className="text-lg font-semibold text-white">Repeat (Days):</label>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    max={31}
+                                    className="w-full rounded-lg border border-gray-700 bg-[#222] p-3 text-sm font-semibold text-white shadow-sm focus:border-[#ff416c] focus:ring focus:ring-[#ff416c]/20"
+                                    required
+                                    {...register('repeat', { required: true })}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex flex-wrap gap-4">
+                            <label className="flex items-center gap-2 text-gray-300">
+                                <input 
+                                    type="checkbox" 
+                                    className="rounded border-gray-700 bg-[#222] text-[#ff416c] focus:ring-[#ff416c]" 
+                                    {...register('isRelease')} 
+                                />
+                                <span className="text-sm font-semibold">Release Now</span>
+                            </label>
+                            <label className="flex items-center gap-2 text-gray-300">
+                                <input 
+                                    type="checkbox" 
+                                    className="rounded border-gray-700 bg-[#222] text-[#ff416c] focus:ring-[#ff416c]" 
+                                    {...register('autoIncrease')} 
+                                />
+                                <span className="text-sm font-semibold">Auto Increase Showtime</span>
+                            </label>
+                            <label className="flex items-center gap-2 text-gray-300">
+                                <input
+                                    type="checkbox"
+                                    className="rounded border-gray-700 bg-[#222] text-[#ff416c] focus:ring-[#ff416c] disabled:opacity-50"
+                                    disabled={!watch('autoIncrease')}
+                                    {...register('autoIncreaseDate')}
+                                />
+                                <span className="text-sm font-semibold">Auto Increase Date</span>
+                            </label>
+                            <label className="flex items-center gap-2 text-gray-300">
+                                <input
+                                    type="time"
+                                    disabled={!watch('autoIncrease')}
+                                    className="rounded-lg border border-gray-700 bg-[#222] p-2 text-sm font-semibold text-white shadow-sm disabled:opacity-50"
+                                    {...register('gap')}
+                                />
+                                <span className="text-sm font-semibold">Gap</span>
+                            </label>
+                            <label className="flex items-center gap-2 text-gray-300">
+                                <input
+                                    type="checkbox"
+                                    className="rounded border-gray-700 bg-[#222] text-[#ff416c] focus:ring-[#ff416c] disabled:opacity-50"
+                                    disabled={!watch('autoIncrease')}
+                                    {...register('rounding5', {
+                                        onChange: () => setValue('rounding10', false),
+                                    })}
+                                />
+                                <span className="text-sm font-semibold">Round to 5 Minutes</span>
+                            </label>
+                            <label className="flex items-center gap-2 text-gray-300">
+                                <input
+                                    type="checkbox"
+                                    className="rounded border-gray-700 bg-[#222] text-[#ff416c] focus:ring-[#ff416c] disabled:opacity-50"
+                                    disabled={!watch('autoIncrease')}
+                                    {...register('rounding10', {
+                                        onChange: () => setValue('rounding5', false),
+                                    })}
+                                />
+                                <span className="text-sm font-semibold">Round to 10 Minutes</span>
+                            </label>
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={isAddingShowtime}
+                            className="w-fit rounded-lg bg-gradient-to-r from-[#ff416c] to-[#ff4b2b] px-6 py-3 text-sm font-medium text-white shadow-md transition-all duration-300 hover:from-[#ff416c]/90 hover:to-[#ff4b2b]/90 hover:shadow-[0_0_10px_-2px_rgba(255,75,43,0.5)] disabled:opacity-50"
+                        >
+                            {isAddingShowtime ? 'Adding...' : 'Add Showtime +'}
+                        </button>
+                    </form>
+                )}
+                {filterMovie?.name && (
+                    <div className="flex items-center gap-3 rounded-lg bg-gradient-to-r from-[#ff416c] to-[#ff4b2b] p-4 text-white shadow-md">
+                        <InformationCircleIcon className="h-6 w-6" />
+                        <p>{`You are viewing the showtimes of "${filterMovie?.name}"`}</p>
+                    </div>
+                )}
+                <Showtimes
+                    showtimes={theater.showtimes}
+                    movies={movies}
+                    selectedDate={selectedDate}
+                    filterMovie={filterMovie}
+                />
+            </div>
+        </div>
+    );
+};
+
+export default Theater;

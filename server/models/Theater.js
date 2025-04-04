@@ -11,6 +11,7 @@ const theaterSchema = new mongoose.Schema({
 		},
 		column: {
 			type: Number,
+			
 			required: [true, 'Please add a seatPlan column']
 		}
 	},

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema Management System Data Dictionary</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 2rem; max-width: 1200px; margin: auto; padding: 20px; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #34495e; margin-top: 2rem; padding: 5px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f8f9fa; font-weight: 600; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .note { background-color: #e8f4f8; padding: 1.5rem; border-radius: 5px; margin: 2rem 0; }
+        .relationship { color: #27ae60; font-weight: bold; margin: 15px 0; }
+        .entity-section { margin: 40px 0; border-left: 4px solid #3498db; padding-left: 20px; }
+        .constraint { color: #e74c3c; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <h1>🎬 Cinema Management System Data Dictionary</h1>
+
+    <!-- Cinema Entity -->
+    <section class="entity-section">
+        <h2>1. Cinema 🏢</h2>
+        <p><strong>Description:</strong> Physical cinema location containing multiple theaters</p>
+        
+        <table>
+            <tr>
+                <th>Attribute</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Constraints</th>
+                <th>References</th>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>String</td>
+                <td>Unique cinema name</td>
+                <td class="constraint">Required, Unique, Trimmed</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>theaters</td>
+                <td>Array[ObjectId]</td>
+                <td>Theaters in this cinema</td>
+                <td>-</td>
+                <td>Theater</td>
+            </tr>
+            <tr>
+                <td>createdAt</td>
+                <td>Date</td>
+                <td>Creation timestamp</td>
+                <td>Auto-generated</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>updatedAt</td>
+                <td>Date</td>
+                <td>Update timestamp</td>
+                <td>Auto-generated</td>
+                <td>-</td>
+            </tr>
+        </table>
+
+        <div class="relationship">🔗 Relationships:</div>
+        <ul>
+            <li>One-to-Many with Theater</li>
+            <li>Cascading delete: Cinema → All Theaters</li>
+        </ul>
+    </section>
+
+    <!-- Movie Entity -->
+    <section class="entity-section">
+        <h2>2. Movie 🎥</h2>
+        <p><strong>Description:</strong> Movie available for screening</p>
+        
+        <table>
+            <tr>
+                <th>Attribute</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Constraints</th>
+                <th>References</th>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>String</td>
+                <td>Movie title</td>
+                <td class="constraint">Required, Trimmed</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>length</td>
+                <td>Number</td>
+                <td>Duration in minutes</td>
+                <td class="constraint">Required</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>img</td>
+                <td>String</td>
+                <td>Poster image URL</td>
+                <td class="constraint">Required, Trimmed</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>createdAt</td>
+                <td>Date</td>
+                <td>Creation timestamp</td>
+                <td>Auto-generated</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>updatedAt</td>
+                <td>Date</td>
+                <td>Update timestamp</td>
+                <td>Auto-generated</td>
+                <td>-</td>
+            </tr>
+        </table>
+
+        <div class="relationship">🔗 Relationships:</div>
+        <ul>
+            <li>One-to-Many with Showtime</li>
+            <li>Cascading delete: Movie → All Showtimes</li>
+        </ul>
+    </section>
+
+    <!-- Showtime Entity -->
+    <section class="entity-section">
+        <h2>3. Showtime 🕒</h2>
+        <p><strong>Description:</strong> Scheduled movie screening in a theater</p>
+        
+        <table>
+            <tr>
+                <th>Attribute</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Constraints</th>
+                <th>References</th>
+            </tr>
+            <tr>
+                <td>theater</td>
+                <td>ObjectId</td>
+                <td>Screening location</td>
+                <td class="constraint">Required</td>
+                <td>Theater</td>
+            </tr>
+            <tr>
+                <td>movie</td>
+                <td>ObjectId</td>
+                <td>Movie being shown</td>
+                <td class="constraint">Required</td>
+                <td>Movie</td>
+            </tr>
+            <tr>
+                <td>showtime</td>
+                <td>Date</td>
+                <td>Screening date/time</td>
+                <td class="constraint">Required</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>seats</td>
+                <td>Array</td>
+                <td>Booked seats</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>seats.row</td>
+                <td>String</td>
+                <td>Seat row (A-Z)</td>
+                <td class="constraint">Required</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>seats.number</td>
+                <td>Number</td>
+                <td>Seat number</td>
+                <td class="constraint">Required</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>seats.user</td>
+                <td>ObjectId</td>
+                <td>Seat owner</td>
+                <td>-</td>
+                <td>User</td>
+            </tr>
+            <tr>
+                <td>isRelease</td>
+                <td>Boolean</td>
+                <td>Showtime status</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+        </table>
+
+        <div class="relationship">🔗 Relationships:</div>
+        <ul>
+            <li>Many-to-One with Theater and Movie</li>
+            <li>Cascading update: Showtime → User tickets</li>
+        </ul>
+    </section>
+
+    <!-- Theater Entity -->
+    <section class="entity-section">
+        <h2>4. Theater 🪑</h2>
+        <p><strong>Description:</strong> Physical screen/room in a cinema</p>
+        
+        <table>
+            <tr>
+                <th>Attribute</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Constraints</th>
+                <th>References</th>
+            </tr>
+            <tr>
+                <td>cinema</td>
+                <td>ObjectId</td>
+                <td>Parent cinema</td>
+                <td class="constraint">Required</td>
+                <td>Cinema</td>
+            </tr>
+            <tr>
+                <td>number</td>
+                <td>Number</td>
+                <td>Theater number</td>
+                <td class="constraint">Required</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>seatPlan.row</td>
+                <td>String</td>
+                <td>Row identifier</td>
+                <td class="constraint">Required, Max 2 chars</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>seatPlan.column</td>
+                <td>Number</td>
+                <td>Seats per row</td>
+                <td class="constraint">Required</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>showtimes</td>
+                <td>Array[ObjectId]</td>
+                <td>Scheduled showtimes</td>
+                <td>-</td>
+                <td>Showtime</td>
+            </tr>
+        </table>
+
+        <div class="relationship">🔗 Relationships:</div>
+        <ul>
+            <li>Many-to-One with Cinema</li>
+            <li>One-to-Many with Showtime</li>
+            <li>Cascading delete: Theater → All Showtimes</li>
+        </ul>
+    </section>
+
+    <!-- User Entity -->
+    <section class="entity-section">
+        <h2>5. User 👤</h2>
+        <p><strong>Description:</strong> System user for ticket booking</p>
+        
+        <table>
+            <tr>
+                <th>Attribute</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Constraints</th>
+                <th>References</th>
+            </tr>
+            <tr>
+                <td>username</td>
+                <td>String</td>
+                <td>Unique identifier</td>
+                <td class="constraint">Required, Unique</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>email</td>
+                <td>String</td>
+                <td>Contact email</td>
+                <td class="constraint">Required, Unique, Regex validated</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>role</td>
+                <td>String</td>
+                <td>User permissions</td>
+                <td class="constraint">Enum: ['user', 'admin'], Default: 'user'</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>password</td>
+                <td>String</td>
+                <td>Hashed secret</td>
+                <td class="constraint">Required, Min 6 chars</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>tickets</td>
+                <td>Array</td>
+                <td>Booked tickets</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>tickets.showtime</td>
+                <td>ObjectId</td>
+                <td>Showtime reference</td>
+                <td>-</td>
+                <td>Showtime</td>
+            </tr>
+            <tr>
+                <td>createdAt</td>
+                <td>Date</td>
+                <td>Account creation date</td>
+                <td>Auto-generated</td>
+                <td>-</td>
+            </tr>
+        </table>
+
+        <div class="relationship">🔗 Relationships:</div>
+        <ul>
+            <li>One-to-Many with Tickets</li>
+            <li>Dependent on Showtime references</li>
+        </ul>
+    </section>
+
+    <!-- System Notes -->
+    <section class="note">
+        <h2>📌 System Notes</h2>
+        
+        <h3>⚡ Cascading Actions:</h3>
+        <ul>
+            <li>🗑️ Cinema deletion → All Theaters → All Showtimes</li>
+            <li>🎞️ Movie deletion → All associated Showtimes</li>
+            <li>🪑 Theater deletion → All associated Showtimes</li>
+            <li>⏰ Showtime deletion → User ticket references removed</li>
+        </ul>
+
+        <h3>🔐 Security Features:</h3>
+        <ul>
+            <li>🔑 Password hashing with bcrypt</li>
+            <li>🛡️ JWT authentication system</li>
+            <li>👮 Role-based access control</li>
+        </ul>
+
+        <h3>⚠️ Important Notes:</h3>
+        <ul>
+            <li>📧 Email validation using regex pattern</li>
+            <li>👥 User role has typo in schema ('defalut') but functions correctly</li>
+            <li>💺 Seat plan limited to 2-character row identifiers</li>
+        </ul>
+    </section>
+
+</body>
+</html>

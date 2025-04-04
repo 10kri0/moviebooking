@@ -1,138 +1,154 @@
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-import axios from 'axios'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import Loading from './Loading'
+import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/react/24/outline';
+import axios from 'axios';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Loading from '../components/Loading';
+
 const CinemaLists = ({
-	cinemas,
-	selectedCinemaIndex,
-	setSelectedCinemaIndex,
-	fetchCinemas,
-	auth,
-	isFetchingCinemas = false
+  cinemas,
+  selectedCinemaIndex,
+  setSelectedCinemaIndex,
+  fetchCinemas,
+  auth,
+  isFetchingCinemas = false,
 }) => {
-	const {
-		register,
-		handleSubmit,
-		reset,
-		watch,
-		formState: { errors }
-	} = useForm()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm();
 
-	const [isAdding, SetIsAdding] = useState(false)
+  const [isAdding, setIsAdding] = useState(false);
 
-	const onAddCinema = async (data) => {
-		try {
-			SetIsAdding(true)
-			const response = await axios.post('/cinema', data, {
-				headers: {
-					Authorization: `Bearer ${auth.token}`
-				}
-			})
-			// console.log(response.data)
-			reset()
-			fetchCinemas(data.name)
-			toast.success('Add cinema successful!', {
-				position: 'top-center',
-				autoClose: 2000,
-				pauseOnHover: false
-			})
-		} catch (error) {
-			console.error(error)
-			toast.error('Error', {
-				position: 'top-center',
-				autoClose: 2000,
-				pauseOnHover: false
-			})
-		} finally {
-			SetIsAdding(false)
-		}
-	}
+  const onAddCinema = async (data) => {
+    try {
+      setIsAdding(true);
+      const response = await axios.post('/cinema', data, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
+      reset();
+      fetchCinemas(data.name);
+      toast.success('Cinema added successfully!', {
+        position: 'top-center',
+        autoClose: 2000,
+        pauseOnHover: false,
+        theme: 'dark',
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to add cinema. Please try again.', {
+        position: 'top-center',
+        autoClose: 2000,
+        pauseOnHover: false,
+        theme: 'dark',
+      });
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
-	const CinemaLists = ({ cinemas }) => {
-		const cinemasList = cinemas?.filter((cinema) =>
-			cinema.name.toLowerCase().includes(watch('search')?.toLowerCase() || '')
-		)
+  const CinemaLists = ({ cinemas }) => {
+    const cinemasList = cinemas?.filter((cinema) =>
+      cinema.name.toLowerCase().includes(watch('search')?.toLowerCase() || ''),
+    );
 
-		return cinemasList.length ? (
-			cinemasList.map((cinema, index) => {
-				return cinemas[selectedCinemaIndex]?._id === cinema._id ? (
-					<button
-						className="w-fit rounded-md bg-gradient-to-br from-indigo-800 to-blue-700 px-2.5 py-1.5 text-lg font-medium text-white drop-shadow-xl hover:from-indigo-700 hover:to-blue-600"
-						onClick={() => {
-							setSelectedCinemaIndex(null)
-							sessionStorage.setItem('selectedCinemaIndex', null)
-						}}
-						key={index}
-					>
-						{cinema.name}
-					</button>
-				) : (
-					<button
-						className="w-fit rounded-md bg-gradient-to-br from-indigo-800 to-blue-700 px-2 py-1 font-medium text-white drop-shadow-md hover:from-indigo-700 hover:to-blue-600"
-						onClick={() => {
-							setSelectedCinemaIndex(index)
-							sessionStorage.setItem('selectedCinemaIndex', index)
-						}}
-						key={index}
-					>
-						{cinema.name}
-					</button>
-				)
-			})
-		) : (
-			<div>No cinemas found</div>
-		)
-	}
+    return cinemasList.length ? (
+      cinemasList.map((cinema, index) => (
+        <button
+          key={index}
+          className={`w-fit rounded-xl px-5 py-3 font-medium text-white transition-all duration-300 ${
+            cinemas[selectedCinemaIndex]?._id === cinema._id
+              ? 'bg-gradient-to-br from-[#ff416c] to-[#ff4b2b] shadow-lg hover:from-[#ff416c]/90 hover:to-[#ff4b2b]/90'
+              : 'bg-[#1e1e2e] shadow-md hover:bg-[#2a2a3a] hover:shadow-lg'
+          }`}
+          onClick={() => {
+            setSelectedCinemaIndex(index);
+            sessionStorage.setItem('selectedCinemaIndex', index);
+          }}
+        >
+          <span className="drop-shadow-md">{cinema.name}</span>
+        </button>
+      ))
+    ) : (
+      <div className="rounded-lg bg-[#1e1e2e]/50 p-4 text-center text-gray-400">
+        No cinemas found matching your search.
+      </div>
+    );
+  };
 
-	return (
-		<>
-			<div className="mx-4 flex h-fit flex-col gap-4 rounded-md bg-gradient-to-br from-indigo-200 to-blue-100 p-4 text-gray-900 drop-shadow-xl sm:mx-8 sm:p-6">
-				<form
-					className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2"
-					onSubmit={handleSubmit(onAddCinema)}
-				>
-					<h2 className="text-3xl font-bold">Cinema Lists</h2>
-					{auth.role === 'admin' && (
-						<div className="flex w-fit grow sm:justify-end">
-							<input
-								placeholder="Type a cinema name"
-								className="w-full grow rounded-l border border-gray-300 px-3 py-1 sm:max-w-xs"
-								required
-								{...register('name', { required: true })}
-							/>
-							<button
-								disabled={isAdding}
-								className="flex items-center whitespace-nowrap rounded-r-md bg-gradient-to-r from-indigo-600 to-blue-500 px-2 py-1 font-medium text-white hover:from-indigo-500 hover:to-blue-400 disabled:from-slate-500 disabled:to-slate-400"
-							>
-								{isAdding ? 'Processing...' : 'ADD +'}
-							</button>
-						</div>
-					)}
-				</form>
-				<div className="relative">
-					<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-						<MagnifyingGlassIcon className="h-5 w-5 stroke-2 text-gray-500" />
-					</div>
-					<input
-						type="search"
-						className="block w-full rounded-lg border border-gray-300 p-2 pl-10 text-gray-900"
-						placeholder="Search cinema"
-						{...register('search')}
-					/>
-				</div>
-				{isFetchingCinemas ? (
-					<Loading />
-				) : (
-					<div className="flex flex-wrap items-center gap-3">
-						<CinemaLists cinemas={cinemas} />
-					</div>
-				)}
-			</div>
-		</>
-	)
-}
+  return (
+    <div className="mx-4 flex h-fit flex-col gap-6 rounded-2xl bg-gradient-to-br from-black via-[#121212] to-[#1a1a2e] p-6 text-gray-100 shadow-2xl sm:mx-8 sm:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-[#ff416c] to-[#ff4b2b] bg-clip-text text-transparent">
+            Cinema Management
+          </h2>
+         
+        </div>
+        
+        {auth.role === 'admin' && (
+          <form 
+            className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-end"
+            onSubmit={handleSubmit(onAddCinema)}
+          >
+            <div className="flex-1">
+              <label htmlFor="cinema-name" className="mb-1 block text-sm font-medium text-gray-300">
+                Add New Cinema
+              </label>
+              <input
+                id="cinema-name"
+                placeholder="Enter cinema name"
+                className="w-full rounded-xl border border-gray-700 bg-[#1e1e2e] px-4 py-3 text-white placeholder-gray-500 focus:border-[#ff416c] focus:ring-2 focus:ring-[#ff416c]/50 sm:min-w-[300px]"
+                required
+                {...register('name', { required: true })}
+              />
+            </div>
+            <button
+              disabled={isAdding}
+              className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#ff416c] to-[#ff4b2b] px-5 py-3 font-medium text-white transition-all duration-300 hover:from-[#ff416c]/90 hover:to-[#ff4b2b]/90 hover:shadow-lg disabled:from-gray-600 disabled:to-gray-700 disabled:hover:shadow-none"
+            >
+              {isAdding ? (
+                'Adding...'
+              ) : (
+                <>
+                  <PlusIcon className="h-5 w-5" />
+                  Add Cinema
+                </>
+              )}
+            </button>
+          </form>
+        )}
+      </div>
 
-export default CinemaLists
+      <div className="relative">
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <MagnifyingGlassIcon className="h-5 w-5 text-gray-500" />
+        </div>
+        <input
+          type="search"
+          className="block w-full rounded-xl border border-gray-700 bg-[#1e1e2e] px-4 py-3 pl-10 text-white placeholder-gray-500 focus:border-[#ff416c] focus:ring-2 focus:ring-[#ff416c]/50"
+          placeholder="Search cinemas..."
+          {...register('search')}
+        />
+      </div>
+
+      {isFetchingCinemas ? (
+        <div className="flex justify-center py-8">
+          <Loading />
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-3">
+          <CinemaLists cinemas={cinemas} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CinemaLists;

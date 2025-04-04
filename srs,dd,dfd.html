@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <title>Movie Booking Website - SRS & Data Dictionary</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            margin-top: 2rem;
+            padding: 5px 0;
+            border-bottom: 2px solid #3498db;
+        }
+        h3 {
+            margin-top: 1.5rem;
+            color: #34495e;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .note {
+            background-color: #e8f4f8;
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin: 2rem 0;
+        }
+        .relationship {
+            color: #27ae60;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        .entity-section {
+            margin: 40px 0;
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+        }
+        .constraint {
+            color: #e74c3c;
+            font-weight: 500;
+        }
+        .section {
+            margin-bottom: 3rem;
+        }
+        .section p {
+            margin: 0.5rem 0;
+        }
+        .section ul {
+            margin: 0.5rem 0;
+            padding-left: 20px;
+        }
+        .section ul li {
+            margin: 0.5rem 0;
+        }
+      
+      
+            .container { 
+                margin: 20px; 
+                padding: 20px; 
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                background: white;
+            }
+            h1, h2, h3 {
+                color: #2c3e50;
+                font-family: 'Arial', sans-serif;
+            }
+            .mermaid { 
+                margin: 20px 0;
+                padding: 20px;
+                background: #f9f9f9;
+                border-radius: 8px;
+            }
+            .data-dict {
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+                margin-top: 20px;
+            }
+            .container { padding: 50px; background-color: #fff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+            .header{
+                text-align: center;
+                margin-bottom: 20px;
+            }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            
+        <h2>Software Requirements Specification  Data Dictionary &  Data Flow Diagram</h2>
+        <h2>Project name :🎬 Movie Booking Website</h2>
+
+        <h1>Developers : Krish Patel , Jayesh Patil</h1>
+          
+        </div>
+
+        <div class="toc" id="table-of-contents">
+            <h3>📑 Table of Contents</h3>
+            <table>
+                <tr>
+                    <th>Section</th>
+                    <th>Title</th>
+                    <th>Page</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td><b>Software requirements specification</b></td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td> <b>Data Flow Diagram</b></td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><b>Data Dictionary</b></td>
+                    <td>-</td>
+                </tr>
+            </table>
+       <br>
+       <br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+    <div class="container">
+        <h1>🎬 Movie Booking Website - SRS ,  Data Dictionary & Data Flow Diagram </h1>
+
+        
+        <!-- Introduction Section -->
+        <section class="section">
+            <h2>📌 1. Introduction</h2>
+            <h3>📖 1.1 Purpose</h3>
+            <p>This document outlines the software requirements for the <strong>Cinema Booking System (CBS)</strong>, a web-based platform developed using the <strong>MERN stack</strong>. It describes the expected behavior of the system, the functionalities it should offer, and the constraints and limitations the system should adhere to.</p>
+
+            <h3>🎯 1.2 Scope</h3>
+            <p>The <strong>Cinema Booking System</strong> is designed to provide a seamless and intuitive interface for users to book movie tickets online. The system offers functionalities such as movie listings, seat bookings, ticket management, and administrative controls. The system will be deployed as a <strong>responsive web application</strong> that supports multiple user roles: <strong>Viewer</strong>, <strong>Registered User</strong>, and <strong>Administrator</strong>.</p>
+
+            <h3>🔍 1.3 Definitions and Abbreviations</h3>
+            <ul>
+                <li><strong>MERN Stack</strong>: A combination of MongoDB, Express.js, React.js, and Node.js for full-stack web development.</li>
+                <li><strong>JWT</strong>: A secure method of transmitting information between parties in a compact format.</li>
+            </ul>
+
+            <h3>📚 1.4 References</h3>
+            <ul>
+                <li><strong>React</strong> v18.2.0</li>
+                <li><strong>Node.js</strong> v16.14.0</li>
+                <li><strong>MongoDB</strong> v5.0</li>
+                <li><strong>Express.js</strong> v4.18.2</li>
+                <li><strong>Tailwind CSS</strong> v3.3.3</li>
+            </ul>
+        </section>
+
+        <!-- Overall Description Section -->
+        <section class="section">
+            <h2>🌍 2. Overall Description</h2>
+            <h3>🖥️ 2.1 Product Perspective</h3>
+            <p>The <strong>Cinema Booking System (CBS)</strong> will operate as a <strong>single-page application (SPA)</strong> for both the <strong>viewer and registered users</strong>. The administrative functionality is integrated into the same platform but with restricted access. Users can access the system on both mobile devices and desktops with a responsive design that adjusts based on the screen size.</p>
+
+            <h3>⚙️ 2.2 Product Functions</h3>
+            <ul>
+                <li><strong>Movie Listings</strong>: Display a list of currently available movies with details like genre, runtime, rating, etc.</li>
+                <li><strong>Showtime Selection</strong>: Users can select the desired showtime based on their preferred movie.</li>
+                <li><strong>Seat Booking</strong>: Interactive seating chart allowing users to select available seats.</li>
+                <li><strong>Ticket Management</strong>: View past bookings, download tickets, and cancel bookings.</li>
+                <li><strong>Admin Dashboard</strong>: Admin can manage cinemas, movies, and showtimes.</li>
+            </ul>
+
+            <h3>👤 2.3 User Characteristics</h3>
+            <ul>
+                <li><strong>Viewer</strong>: Users who can browse movies, check showtimes, and view cinema details.</li>
+                <li><strong>Registered User</strong>: Users who have an account and can book tickets, view their booking history, and manage their profile.</li>
+                <li><strong>Administrator</strong>: System users who have permission to manage movies, cinemas, showtimes, and user roles.</li>
+            </ul>
+
+            <h3>⚠️ 2.4 Constraints</h3>
+            <ul>
+                <li><strong>Browser Compatibility</strong>: The system must be compatible with all major browsers (Chrome, Firefox, Safari, etc.).</li>
+                <li><strong>Security</strong>: All personal user information must be protected using industry-standard encryption techniques (e.g., bcrypt for password hashing).</li>
+                <li><strong>Scalability</strong>: The system must be able to scale to handle increasing numbers of users, especially during peak hours (e.g., during movie premieres).</li>
+            </ul>
+        </section>
+
+        <!-- Functional Requirements Section -->
+        <section class="section">
+            <h2>⚡ 3. Functional Requirements</h2>
+            <h3>🔐 3.1 User Authentication</h3>
+            <ul>
+                <li><strong>Registration</strong>: New users can register by providing a username, email, and password.</li>
+                <li><strong>Login/Logout</strong>: Returning users can log in securely using their credentials.</li>
+                <li><strong>JWT Authentication</strong>: Secure authentication method with token-based sessions. JWT will be issued on login and used for subsequent requests to authenticate users.</li>
+            </ul>
+
+            <h3>🎬 3.2 Movie and Showtime Management</h3>
+            <ul>
+                <li><strong>Movie Browsing</strong>: Users can view available movies, including descriptions, cast, ratings, and showtimes.</li>
+                <li><strong>Admin Features</strong>: Admins can add, edit, and delete movies and showtimes. Admins can also update movie availability based on showtimes.</li>
+            </ul>
+
+            <h3>🎟️ 3.3 Ticket Booking</h3>
+            <ul>
+                <li><strong>Showtime Selection</strong>: Users can select from a list of available movie showtimes.</li>
+                <li><strong>Seat Selection</strong>: Interactive seating chart displaying available (🟩) and unavailable (🟥) seats.</li>
+                <li><strong>Booking Confirmation</strong>: After seat selection, users will receive a booking confirmation email and see a confirmation page.</li>
+                <li><strong>Booking History</strong>: Registered users can view their booking history and rebook tickets if needed.</li>
+            </ul>
+
+            <h3>💺 3.4 Seat Selection</h3>
+            <ul>
+                <li><strong>Seats Availability</strong>: Each movie’s available seats will be displayed. Seats can be color-coded as available, reserved, or unavailable.</li>
+                <li><strong>Multiple Seat Booking</strong>: Users can select multiple seats in one go.</li>
+                <li><strong>Dynamic Availability</strong>: Once a user selects seats, they become unavailable to others until the booking process is completed.</li>
+            </ul>
+
+            <h3>🛠️ 3.5 Administrative Features</h3>
+            <ul>
+                <li><strong>Cinema Management</strong>: Admin can add, edit, and delete cinemas, and assign theaters to each cinema.</li>
+                <li><strong>User Management</strong>: Admin can view user profiles, change user roles (admin/user), and deactivate user accounts.</li>
+                <li><strong>Schedule Management</strong>: Admin can add and manage showtimes for movies across different cinemas.</li>
+            </ul>
+        </section>
+
+        <!-- Non-Functional Requirements Section -->
+        <section class="section">
+            <h2>🚀 4. Non-Functional Requirements</h2>
+            <h3>⚡ 4.1 Performance</h3>
+            <ul>
+                <li>The system must be able to handle at least <strong>500 concurrent users</strong> at any given time during peak hours.</li>
+                <li>The system should perform all interactions (e.g., booking tickets, searching for movies) within <strong>3 seconds</strong> under normal usage.</li>
+            </ul>
+
+            <h3>🔒 4.2 Security</h3>
+            <ul>
+                <li><strong>Data Encryption</strong>: All sensitive data, including passwords and payment details, must be encrypted using <strong>SSL/TLS</strong> encryption during transmission.</li>
+                <li><strong>Role-based Access Control (RBAC)</strong>: The system will implement strict access control measures for each role (Viewer, Registered User, Admin).</li>
+            </ul>
+
+            <h3>🖥️ 4.3 Usability</h3>
+            <ul>
+                <li><strong>Responsive UI</strong>: The interface should adjust for mobile, tablet, and desktop use cases.</li>
+                <li><strong>Accessibility</strong>: Ensure the platform is accessible to users with disabilities, including screen reader compatibility and keyboard navigability.</li>
+                <li><strong>Error Handling</strong>: Users should receive clear, actionable error messages.</li>
+            </ul>
+        </section>
+
+        <!-- System Architecture Section -->
+        <section class="section">
+            <h2>🏗️ 5. System Architecture</h2>
+            <h3>🛠️ 5.1 Technologies Used</h3>
+            <ul>
+                <li><strong>Frontend</strong>: React (v18.2.0), Tailwind CSS, React Router for routing.</li>
+                <li><strong>Backend</strong>: Node.js, Express.js for API routes, MongoDB for database management.</li>
+                <li><strong>Database</strong>: MongoDB with Mongoose ORM for database interactions.</li>
+                <li><strong>Authentication</strong>: JWT-based authentication for secure logins and user management.</li>
+                <li><strong>Deployment</strong>: Client hosted on <strong>Vercel</strong> and backend hosted on <strong>AWS</strong> using EC2 instances.</li>
+            </ul>
+
+            <h3>☁️ 5.2 Deployment and Hosting</h3>
+            <ul>
+                <li><strong>Client Hosting</strong>: Vercel provides scalable hosting for the frontend, optimizing for speed and security.</li>
+                <li><strong>Backend Hosting</strong>: The backend is hosted on an AWS EC2 instance, connected to <strong>MongoDB Atlas</strong> for cloud-based database management.</li>
+                <li><strong>Backup & Disaster Recovery</strong>: Regular database backups will be performed to ensure data integrity in case of system failure.</li>
+            </ul>
+        </section>
+
+        <!-- Assumptions and Dependencies Section -->
+        <section class="section">
+            <h2>🔗 6. Assumptions and Dependencies</h2>
+            <ul>
+                <li><strong>Internet Connectivity</strong>: A stable internet connection is required for accessing the Cinema Booking System.</li>
+                <li><strong>Database Availability</strong>: The MongoDB database will be maintained and regularly updated to ensure data availability.</li>
+                <li><strong>Third-party Integrations</strong>: The payment gateway will rely on third-party services (e.g., Stripe or PayPal) for transaction processing.</li>
+            </ul>
+        </section>
+
+        <!-- Appendices Section -->
+        <section class="section">
+            <h2>📄 7. Appendices</h2>
+            <h3>UI Screenshots</h3>
+            <p>Screenshots of the <strong>movie listing page</strong>, <strong>seat selection page</strong>, and <strong>admin dashboard</strong> will be included as references for developers and designers.</p>
+
+            <h3>API Documentation</h3>
+            <p>A detailed list of RESTful API endpoints, including methods (GET, POST, PUT, DELETE), required parameters, and responses for each endpoint.</p>
+        </section>
+
+        <!-- Use Case Examples Section -->
+        <section class="section">
+            <h2>Use Case Examples</h2>
+            <h3>Use Case 1: Booking a Movie Ticket</h3>
+            <ul>
+                <li><strong>Actors</strong>: Registered User</li>
+                <li><strong>Preconditions</strong>: User is logged in.</li>
+                <li><strong>Flow</strong>:
+                    <ol>
+                        <li>User selects a movie.</li>
+                        <li>User selects a showtime.</li>
+                        <li>User selects seats.</li>
+                        <li>User confirms the booking.</li>
+                        <li>System sends a booking confirmation.</li>
+                    </ol>
+                </li>
+            </ul>
+
+            <h3>Use Case 2: Admin Managing Movies</h3>
+            <ul>
+                <li><strong>Actors</strong>: Admin</li>
+                <li><strong>Preconditions</strong>: Admin is logged in with the necessary privileges.</li>
+                <li><strong>Flow</strong>:
+                    <ol>
+                        <li>Admin accesses the movie management page.</li>
+                        <li>Admin adds, edits, or deletes a movie.</li>
+                        <li>Changes are saved to the database.</li>
+                    </ol>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Data Dictionary Section -->
+        <section class="section">
+            <h1>🎬 Cinema Management System Data Dictionary</h1>
+
+            <!-- Cinema Entity -->
+            <section class="entity-section">
+                <h2>1. Cinema 🏢</h2>
+                <p><strong>Description:</strong> Physical cinema location containing multiple theaters</p>
+                
+                <table>
+                    <tr>
+                        <th>Attribute</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Constraints</th>
+                        <th>References</th>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td>String</td>
+                        <td>Unique cinema name</td>
+                        <td class="constraint">Required, Unique, Trimmed</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>theaters</td>
+                        <td>Array[ObjectId]</td>
+                        <td>Theaters in this cinema</td>
+                        <td>-</td>
+                        <td>Theater</td>
+                    </tr>
+                    <tr>
+                        <td>createdAt</td>
+                        <td>Date</td>
+                        <td>Creation timestamp</td>
+                        <td>Auto-generated</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>updatedAt</td>
+                        <td>Date</td>
+                        <td>Update timestamp</td>
+                        <td>Auto-generated</td>
+                        <td>-</td>
+                    </tr>
+                </table>
+
+                <div class="relationship">🔗 Relationships:</div>
+                <ul>
+                    <li>One-to-Many with Theater</li>
+                    <li>Cascading delete: Cinema → All Theaters</li>
+                </ul>
+            </section>
+
+            <!-- Movie Entity -->
+            <section class="entity-section">
+                <h2>2. Movie 🎥</h2>
+                <p><strong>Description:</strong> Movie available for screening</p>
+                
+                <table>
+                    <tr>
+                        <th>Attribute</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Constraints</th>
+                        <th>References</th>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td>String</td>
+                        <td>Movie title</td>
+                        <td class="constraint">Required, Trimmed</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>length</td>
+                        <td>Number</td>
+                        <td>Duration in minutes</td>
+                        <td class="constraint">Required</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>img</td>
+                        <td>String</td>
+                        <td>Poster image URL</td>
+                        <td class="constraint">Required, Trimmed</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>createdAt</td>
+                        <td>Date</td>
+                        <td>Creation timestamp</td>
+                        <td>Auto-generated</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>updatedAt</td>
+                        <td>Date</td>
+                        <td>Update timestamp</td>
+                        <td>Auto-generated</td>
+                        <td>-</td>
+                    </tr>
+                </table>
+
+                <div class="relationship">🔗 Relationships:</div>
+                <ul>
+                    <li>One-to-Many with Showtime</li>
+                    <li>Cascading delete: Movie → All Showtimes</li>
+                </ul>
+            </section>
+
+            <!-- Showtime Entity -->
+            <section class="entity-section">
+                <h2>3. Showtime 🕒</h2>
+                <p><strong>Description:</strong> Scheduled movie screening in a theater</p>
+                
+                <table>
+                    <tr>
+                        <th>Attribute</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Constraints</th>
+                        <th>References</th>
+                    </tr>
+                    <tr>
+                        <td>theater</td>
+                        <td>ObjectId</td>
+                        <td>Screening location</td>
+                        <td class="constraint">Required</td>
+                        <td>Theater</td>
+                    </tr>
+                    <tr>
+                        <td>movie</td>
+                        <td>ObjectId</td>
+                        <td>Movie being shown</td>
+                        <td class="constraint">Required</td>
+                        <td>Movie</td>
+                    </tr>
+                    <tr>
+                        <td>showtime</td>
+                        <td>Date</td>
+                        <td>Screening date/time</td>
+                        <td class="constraint">Required</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>seats</td>
+                        <td>Array</td>
+                        <td>Booked seats</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>seats.row</td>
+                        <td>String</td>
+                        <td>Seat row (A-Z)</td>
+                        <td class="constraint">Required</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>seats.number</td>
+                        <td>Number</td>
+                        <td>Seat number</td>
+                        <td class="constraint">Required</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>seats.user</td>
+                        <td>ObjectId</td>
+                        <td>Seat owner</td>
+                        <td>-</td>
+                        <td>User</td>
+                    </tr>
+                    <tr>
+                        <td>isRelease</td>
+                        <td>Boolean</td>
+                        <td>Showtime status</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                </table>
+
+                <div class="relationship">🔗 Relationships:</div>
+                <ul>
+                    <li>Many-to-One with Theater and Movie</li>
+                    <li>Cascading update: Showtime → User tickets</li>
+                </ul>
+            </section>
+
+            <!-- Theater Entity -->
+            <section class="entity-section">
+                <h2>4. Theater 🪑</h2>
+                <p><strong>Description:</strong> Physical screen/room in a cinema</p>
+                
+                <table>
+                    <tr>
+                        <th>Attribute</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Constraints</th>
+                        <th>References</th>
+                    </tr>
+                    <tr>
+                        <td>cinema</td>
+                        <td>ObjectId</td>
+                        <td>Parent cinema</td>
+                        <td class="constraint">Required</td>
+                        <td>Cinema</td>
+                    </tr>
+                    <tr>
+                        <td>number</td>
+                        <td>Number</td>
+                        <td>Theater number</td>
+                        <td class="constraint">Required</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>seatPlan.row</td>
+                        <td>String</td>
+                        <td>Row identifier</td>
+                        <td class="constraint">Required, Max 2 chars</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>seatPlan.column</td>
+                        <td>Number</td>
+                        <td>Seats per row</td>
+                        <td class="constraint">Required</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>showtimes</td>
+                        <td>Array[ObjectId]</td>
+                        <td>Scheduled showtimes</td>
+                        <td>-</td>
+                        <td>Showtime</td>
+                    </tr>
+                </table>
+
+                <div class="relationship">🔗 Relationships:</div>
+                <ul>
+                    <li>Many-to-One with Cinema</li>
+                    <li>One-to-Many with Showtime</li>
+                    <li>Cascading delete: Theater → All Showtimes</li>
+                </ul>
+            </section>
+
+            <!-- User Entity -->
+            <section class="entity-section">
+                <h2>5. User 👤</h2>
+                <p><strong>Description:</strong> System user for ticket booking</p>
+                
+                <table>
+                    <tr>
+                        <th>Attribute</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Constraints</th>
+                        <th>References</th>
+                    </tr>
+                    <tr>
+                        <td>username</td>
+                        <td>String</td>
+                        <td>Unique identifier</td>
+                        <td class="constraint">Required, Unique</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>email</td>
+                        <td>String</td>
+                        <td>Contact email</td>
+                        <td class="constraint">Required, Unique, Regex validated</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>role</td>
+                        <td>String</td>
+                        <td>User permissions</td>
+                        <td class="constraint">Enum: ['user', 'admin'], Default: 'user'</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>password</td>
+                        <td>String</td>
+                        <td>Hashed secret</td>
+                        <td class="constraint">Required, Min 6 chars</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>tickets</td>
+                        <td>Array</td>
+                        <td>Booked tickets</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>tickets.showtime</td>
+                        <td>ObjectId</td>
+                        <td>Showtime reference</td>
+                        <td>-</td>
+                        <td>Showtime</td>
+                    </tr>
+                    <tr>
+                        <td>createdAt</td>
+                        <td>Date</td>
+                        <td>Account creation date</td>
+                        <td>Auto-generated</td>
+                        <td>-</td>
+                    </tr>
+                </table>
+
+                <div class="relationship">🔗 Relationships:</div>
+                <ul>
+                    <li>One-to-Many with Tickets</li>
+                    <li>Dependent on Showtime references</li>
+                </ul>
+            </section>
+
+            <!-- System Notes -->
+            <section class="note">
+                <h2>📌 System Notes</h2>
+                
+                <h3>⚡ Cascading Actions:</h3>
+                <ul>
+                    <li>🗑️ Cinema deletion → All Theaters → All Showtimes</li>
+                    <li>🎞️ Movie deletion → All associated Showtimes</li>
+                    <li>🪑 Theater deletion → All associated Showtimes</li>
+                    <li>⏰ Showtime deletion → User ticket references removed</li>
+                </ul>
+
+                <h3>🔐 Security Features:</h3>
+                <ul>
+                    <li>🔑 Password hashing with bcrypt</li>
+                    <li>🛡️ JWT authentication system</li>
+                    <li>👮 Role-based access control</li>
+                </ul>
+
+                <h3>⚠️ Important Notes:</h3>
+                <ul>
+                    <li>📧 Email validation using regex pattern</li>
+                    <li>👥 User role has typo in schema ('defalut') but functions correctly</li>
+                    <li>💺 Seat plan limited to 2-character row identifiers</li>
+                </ul>
+            </section>
+        </section>
+    </div>
+    <div class="container">
+        <h1>🎥 Cinema Management System DFD</h1>
+
+        <!-- Level 0 DFD -->
+        <div class="container">
+            <h2>Level 0: Context Diagram</h2>
+            <div class="mermaid">
+                graph TD
+                    A[Admin] -->|Manage Cinemas/Theaters/Movies| C{Cinema Management System}
+                    B[User] -->|Book Tickets/Manage Account| C
+                    C -->|Confirmation/Tickets| A
+                    C -->|Tickets/Notifications| B
+            </div>
+        </div>
+
+        <!-- Level 1 DFD -->
+        <div class="container">
+            <h2>Level 1: Process Decomposition</h2>
+            <div class="mermaid">
+                graph TD
+                    subgraph System Processes
+                        A[Manage Cinemas] --> D[(Cinemas DB)]
+                        B[Manage Theaters] --> E[(Theaters DB)]
+                        C[Manage Movies] --> F[(Movies DB)]
+                        G[Schedule Showtimes] --> H[(Showtimes DB)]
+                        I[Handle Bookings] --> J[(Users DB)]
+                    end
+                    
+                    A -->|Cascade Delete| B
+                    B -->|Cascade Delete| G
+                    C -->|Cascade Delete| G
+                    I -->|Update| H
+                    I -->|Update| J
+            </div>
+        </div>
+
+        <!-- Level 2 DFD -->
+        <div class="container">
+            <h2>Level 2: Detailed Booking Process</h2>
+            <div class="mermaid">
+                flowchart LR
+                    U[User] --> A
+                    subgraph Booking Process
+                        A[Select Showtime] --> B{Seat Available?}
+                        B -->|Yes| C[Reserve Seats]
+                        C --> D[Process Payment]
+                        D --> E[Generate Ticket]
+                        B -->|No| F[Show Error]
+                    end
+                    E --> U
+                    C --> H[(Showtimes DB)]
+                    D --> I[(Transactions)]
+                    E --> J[(Tickets DB)]
+            </div>
+        </div>
+
+        <!-- Data Dictionary -->
+        <div class="data-dict">
+            <h2>📚 Data Dictionary</h2>
+            <div class="mermaid">
+                pie title Data Stores
+                    "Cinemas" : 15
+                    "Theaters" : 20
+                    "Movies" : 25
+                    "Showtimes" : 30
+                    "Users" : 10
+            </div>
+            
+            <h3>Data Flow Matrix</h3>
+            <div class="mermaid">
+                graph LR
+                    Admin -->|CRUD Operations| Cinemas
+                    Cinemas -->|1:N Relationship| Theaters
+                    Theaters -->|1:N Relationship| Showtimes
+                    Movies -->|1:N Relationship| Showtimes
+                    Users -->|N:M Relationship| Showtimes
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                curve: 'basis',
+                nodeSpacing: 50,
+                rankSpacing: 100
+            },
+            themeVariables: {
+                primaryColor: '#e74c3c',
+                secondaryColor: '#8e44ad',
+                tertiaryColor: '#3498db'
+            }
+        });
+    </script>
+</body>
+</html>

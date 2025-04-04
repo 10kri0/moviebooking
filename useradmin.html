@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFD - Cinema Booking System</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</head>
+<body>
+    <h2 style="text-align: center;">DFD - Level 0 (Context Diagram)</h2>
+    <div class="mermaid">
+        graph TD;
+        User--> |Searches Movies| CinemaBookingSystem;
+        User--> |Books Ticket| CinemaBookingSystem;
+        Admin--> |Manages Movies & Showtimes| CinemaBookingSystem;
+        CinemaBookingSystem --> |Processes Payment| PaymentGateway;
+        PaymentGateway --> |Confirms Payment| CinemaBookingSystem;
+        CinemaBookingSystem --> |Sends Confirmation| User;
+    </div>
+
+    <h2 style="text-align: center;">DFD - Level 1</h2>
+    <div class="mermaid">
+        graph TD;
+        User--> |Login/Register| AuthenticationSystem;
+        AuthenticationSystem --> |Grants Access| CinemaBookingSystem;
+        CinemaBookingSystem --> |Displays Movie List| User;
+        User --> |Selects Movie & Showtime| BookingSystem;
+        BookingSystem --> |Selects Seats| SeatManagement;
+        SeatManagement --> |Confirms Selection| BookingSystem;
+        BookingSystem --> |Processes Payment| PaymentGateway;
+        PaymentGateway --> |Sends Confirmation| BookingSystem;
+        BookingSystem --> |Sends E-Ticket| User;
+    </div>
+
+    <h2 style="text-align: center;">DFD - Level 2</h2>
+    <div class="mermaid">
+        graph TD;
+        User--> |Enters Credentials| LoginModule;
+        LoginModule --> |Validates Data| Database;
+        Database --> |Returns User Data| LoginModule;
+        LoginModule --> |Grants Access| CinemaBookingSystem;
+        User --> |Selects Movie| MovieModule;
+        MovieModule --> |Fetches Details| Database;
+        MovieModule --> |Displays Movie Info| User;
+        User --> |Chooses Showtime & Seats| SeatModule;
+        SeatModule --> |Checks Availability| Database;
+        SeatModule --> |Updates Seat Status| Database;
+        SeatModule --> |Confirms Selection| BookingModule;
+        BookingModule --> |Processes Payment| PaymentGateway;
+        PaymentGateway --> |Verifies Payment| Database;
+        Database --> |Updates Booking Status| BookingModule;
+        BookingModule --> |Sends Confirmation| User;
+    </div>
+</body>
+</html>
+
+<body>
+    <h2 style="text-align: center;">DFD - Level 0 (Context Diagram)</h2>
+    <div class="mermaid">
+        graph TD;
+        User--> |Searches Movies| CinemaBookingSystem;
+        User--> |Books Ticket| CinemaBookingSystem;
+        Admin--> |Manages Movies & Showtimes| CinemaBookingSystem;
+        CinemaBookingSystem --> |Processes Payment| PaymentGateway;
+        PaymentGateway --> |Confirms Payment| CinemaBookingSystem;
+        CinemaBookingSystem --> |Sends Confirmation| User;
+    </div>
+
+    <h2 style="text-align: center;">DFD - Level 1</h2>
+    <div class="mermaid">
+        graph TD;
+        User--> |Login/Register| AuthenticationSystem;
+        AuthenticationSystem --> |Grants Access| CinemaBookingSystem;
+        CinemaBookingSystem --> |Displays Movie List| User;
+        User --> |Selects Movie & Showtime| BookingSystem;
+        BookingSystem --> |Selects Seats| SeatManagement;
+        SeatManagement --> |Confirms Selection| BookingSystem;
+        BookingSystem --> |Processes Payment| PaymentGateway;
+        PaymentGateway --> |Sends Confirmation| BookingSystem;
+        BookingSystem --> |Sends E-Ticket| User;
+    </div>
+
+    <h2 style="text-align: center;">DFD - Level 2</h2>
+    <div class="mermaid">
+        graph TD;
+        User--> |Enters Credentials| LoginModule;
+        LoginModule --> |Validates Data| Database;
+        Database --> |Returns User Data| LoginModule;
+        LoginModule --> |Grants Access| CinemaBookingSystem;
+        User --> |Selects Movie| MovieModule;
+        MovieModule --> |Fetches Details| Database;
+        MovieModule --> |Displays Movie Info| User;
+        User --> |Chooses Showtime & Seats| SeatModule;
+        SeatModule --> |Checks Availability| Database;
+        SeatModule --> |Updates Seat Status| Database;
+        SeatModule --> |Confirms Selection| BookingModule;
+        BookingModule --> |Processes Payment| PaymentGateway;
+        PaymentGateway --> |Verifies Payment| Database;
+        Database --> |Updates Booking Status| BookingModule;
+        BookingModule --> |Sends Confirmation| User;
+    </div>
+
+    <h2 style="text-align: center;">Admin Panel DFD</h2>
+    <div class="mermaid">
+        graph TD;
+        Admin--> |Logs In| AdminAuthentication;
+        AdminAuthentication --> |Validates Credentials| Database;
+        Database --> |Grants Access| AdminPanel;
+        AdminPanel --> |Manages Cinemas| CinemaModule;
+        AdminPanel --> |Manages Schedules| ScheduleModule;
+        AdminPanel --> |Manages Showtimes| ShowtimeModule;
+        AdminPanel --> |Manages Movies| MovieModule;
+        AdminPanel --> |Searches Data| SearchModule;
+        AdminPanel --> |Manages Users| UserModule;
+        CinemaModule --> |Updates Data| Database;
+        ScheduleModule --> |Updates Data| Database;
+        ShowtimeModule --> |Updates Data| Database;
+        MovieModule --> |Updates Data| Database;
+        SearchModule --> |Fetches Data| Database;
+        UserModule --> |Manages User Roles & Permissions| Database;
+    </div>
+</body>
+</html>

@@ -14,6 +14,7 @@ const theater = require('./routes/theater');
 const movie = require('./routes/movie');
 const showtime = require('./routes/showtime');
 
+
 mongoose.set('strictQuery', false);
 mongoose
   .connect(process.env.DATABASE, { autoIndex: true })
@@ -46,6 +47,7 @@ app.use('/cinema', cinema);
 app.use('/theater', theater);
 app.use('/movie', movie);
 app.use('/showtime', showtime);
+
 
 const port = process.env.PORT || 8080;
 

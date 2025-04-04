@@ -8,11 +8,15 @@ import Login from './pages/Login'
 import Movie from './pages/Movie'
 import Purchase from './pages/Purchase'
 import Register from './pages/Register'
-import Schedule from './pages/Schedule'
+// import Schedule from './pages/Schedule'
 import Search from './pages/Search'
 import Showtime from './pages/Showtime'
 import Tickets from './pages/Tickets'
 import User from './pages/User'
+import AboutUs from "./pages/AboutUs";
+
+
+import Theater from './pages/Theater'; 
 
 axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:8080'
 axios.defaults.withCredentials = true
@@ -25,7 +29,9 @@ function App() {
 				<Route path="/" element={<Home />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Register />} />
+				<Route path="/aboutus" element={<AboutUs />} />
 				<Route path="/cinema" element={<Cinema />} />
+				<Route path="/theater/:movieId" element={<Theater />} />
 				<Route
 					path="/movie"
 					element={
@@ -45,7 +51,8 @@ function App() {
 				<Route path="/showtime/:id" element={<Showtime />} />
 				<Route path="/purchase/:id" element={<Purchase />} />
 				<Route path="/ticket" element={<Tickets />} />
-				<Route path="/schedule" element={<Schedule />} />
+				{/* <Route path="/schedule" element={<Schedule />} /> */}
+				<Route path="/about" element={<AboutUs />} />
 				<Route
 					path="/user"
 					element={
