@@ -189,6 +189,15 @@ const ShowtimeDetails = ({ showDeleteBtn, showtime, fetchShowtime }) => {
                             <p className="text-lg text-gray-300">
                                 Length: {showtime?.movie?.length || '-'} min
                             </p>
+                            <p className="text-lg text-gray-300">
+                            genre: {showtime?.movie?.genre || '-'} 
+                            </p>
+                            <p className="text-lg text-gray-300">
+                            Showtype: {showtime?.movie?.showType || '-'} 
+                            </p>
+                            <p className="text-lg text-gray-300">
+                            Language: {showtime?.movie?.language || '-'} 
+                            </p>
                         </div>
                     </div>
                     <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-lg bg-gradient-to-br from-[#111] to-[#222] p-4 text-center shadow-md">
