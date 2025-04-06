@@ -1,1 +1,1 @@
-export const Server_url = "https://moviebooking-hs2r.vercel.app/";
+export const Server_url = "https://moviebooking-a4wg.vercel.app/";
