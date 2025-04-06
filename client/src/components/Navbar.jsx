@@ -55,7 +55,7 @@ const Navbar = () => {
             {auth.role === 'admin' && (
                 <>
                     <NavLink to="/movie" Icon={VideoCameraIcon} text="Movies" />
-                    <NavLink to="/schedule" Icon={ClockIcon} text="Schedule" />
+                   
                     <NavLink to="/search" Icon={MagnifyingGlassIcon} text="Search" />
                     <NavLink to="/user" Icon={UsersIcon} text="Users" />
                 </>
