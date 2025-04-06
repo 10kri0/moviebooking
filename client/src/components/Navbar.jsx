@@ -13,7 +13,7 @@ import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../context/AuthContext';
-import AboutUs from '../pages/AboutUs';
+import Aaboutus from './Aaboutus';
 
 const Navbar = () => {
     const { auth, setAuth } = useContext(AuthContext);
@@ -50,7 +50,7 @@ const Navbar = () => {
     const menuLists = () => (
         <div className="flex flex-col lg:flex-row gap-2">
             <NavLink to="/cinema" Icon={HomeModernIcon} text="Cinemas" />
-            <NavLink to="/aboutus" Icon={HomeModernIcon} text="About Us" />
+            <NavLink to="/Aaboutus" Icon={HomeModernIcon} text="AboutUs" />
             {auth.role && <NavLink to="/ticket" Icon={TicketIcon} text="My Tickets" />}
             {auth.role === 'admin' && (
                 <>
