@@ -123,15 +123,27 @@ exports.getMovie = async (req, res, next) => {
 //@desc     Create movie
 //@route    POST /movie
 //@access   Private
+//@desc     Create movie
+//@route    POST /movie
+//@access   Private
 exports.createMovie = async (req, res, next) => {
   try {
-    // Convert hours and minutes to total minutes if needed
-    if (req.body.lengthHr || req.body.lengthMin) {
-      req.body.length = (parseInt(req.body.lengthHr) || 0) * 60 + 
-                       (parseInt(req.body.lengthMin) || 0)
-    }
+    
+    // Explicitly create movie data object
+    const movieData = {
+      name: req.body.name,
+      img: req.body.img,
+      description: req.body.description,
+      genre: req.body.genre,
+      rating: req.body.rating,
+      length: req.body.length,
+      language: req.body.language,
+      showType: req.body.showType
+    };
 
-    const movie = await Movie.create(req.body)
+    const movie = await Movie.create(movieData);
+
+
     res.status(201).json({
       success: true,
       data: movie
@@ -152,10 +164,22 @@ exports.updateMovie = async (req, res, next) => {
                        (parseInt(req.body.lengthMin) || 0)
     }
 
-    const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
+    // Explicitly create update data object
+    const updateData = {
+      name: req.body.name,
+      img: req.body.img,
+      description: req.body.description,
+      genre: req.body.genre,
+      rating: req.body.rating,
+      length: req.body.length,
+      language: req.body.language,
+      showType: req.body.showType
+    };
+
+    const movie = await Movie.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
       runValidators: true
-    })
+    });
 
     if (!movie) {
       return res.status(404).json({ 
