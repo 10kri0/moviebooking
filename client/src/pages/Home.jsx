@@ -4,18 +4,18 @@ import "react-toastify/dist/ReactToastify.css";
 import Navbar from "../components/Navbar";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { 
-  FilmIcon, 
-  TicketIcon, 
+import {
+  FilmIcon,
+  TicketIcon,
   StarIcon,
   ChevronRightIcon,
   SparklesIcon,
   UserGroupIcon,
   GlobeAltIcon,
-  DevicePhoneMobileIcon
+  DevicePhoneMobileIcon,
 } from "@heroicons/react/24/solid";
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const Home = () => {
   const { auth } = useContext(AuthContext);
@@ -24,21 +24,20 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Memoized fetch function
   const fetchMovies = useCallback(async () => {
     try {
       setLoading(true);
-      const config = auth?.role === "admin" ? {
-        headers: { Authorization: `Bearer ${auth?.token}` }
-      } : {};
-      
+      const config = auth?.role === "admin" 
+        ? { headers: { Authorization: `Bearer ${auth?.token}` } } 
+        : {};
+
       const endpoint = auth?.role === "admin" 
         ? "/movie/unreleased/showing" 
         : "/movie/showing";
-      
+
       const response = await axios.get(endpoint, config);
       setMovies(response.data.data);
-      
+
       if (response.data.data.length > 0) {
         const randomMovie = response.data.data[Math.floor(Math.random() * response.data.data.length)];
         setFeaturedMovie(randomMovie);
@@ -51,17 +50,15 @@ const Home = () => {
   }, [auth]);
 
   useEffect(() => {
-    // Initialize AOS with optimized settings
     AOS.init({
       duration: 800,
       once: true,
-      easing: 'ease-out-quad',
+      easing: "ease-out-quad",
       offset: 120
     });
     
     fetchMovies();
     
-    // Clean up AOS
     return () => {
       AOS.refreshHard();
     };
@@ -71,7 +68,6 @@ const Home = () => {
     navigate(`/theater/${movieId}`);
   }, [navigate]);
 
-  // Feature data
   const features = [
     {
       title: "4K Streaming",
@@ -129,7 +125,7 @@ const Home = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/50 z-10" />
         <div 
           className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c')] bg-cover bg-center opacity-20"
-          style={{ willChange: 'transform' }} // Hint for browser optimization
+          style={{ willChange: 'transform' }}
         />
         
         <div className="relative z-20 h-full flex flex-col justify-center items-center text-center px-4">
@@ -258,12 +254,20 @@ const Home = () => {
                     src={movie.img}
                     alt={movie.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy" // Lazy load images
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent p-4 flex flex-col justify-end">
+                    <div className="absolute top-4 left-4 bg-gray-900/80 text-purple-300 px-3 py-1 rounded-full text-sm flex items-center">
+                      <FilmIcon className="w-4 h-4 mr-1" />
+                      {movie.showType}
+                    </div>
                     <div className="absolute top-4 right-4 bg-gray-900/80 text-purple-300 px-3 py-1 rounded-full text-sm flex items-center">
                       <StarIcon className="w-4 h-4 mr-1" />
-                      {movie.rating?.toFixed(1) }
+                      {movie.rating?.toFixed(1)}
+                    </div>
+                    <div className="absolute bottom-4 right-4 bg-gray-900/80 text-purple-300 px-3 py-1 rounded-full text-sm flex items-center">
+                      <GlobeAltIcon className="w-4 h-4 mr-1" />
+                      {movie.language}
                     </div>
                     
                     <div className="space-y-2">
@@ -318,7 +322,7 @@ const Home = () => {
                   src={feature.image} 
                   alt={feature.title}
                   className="w-full h-full object-cover brightness-75 group-hover:brightness-100 transition-all duration-500"
-                  loading="lazy" // Lazy load images
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent p-6 flex flex-col justify-end">
                   <div className="mb-2">{feature.icon}</div>

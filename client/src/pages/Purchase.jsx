@@ -12,16 +12,20 @@ const formatINR = (amount) => {
     return '₹' + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 };
 
-const calculateSeatPrice = (seat, showtime) => {
+export const calculateSeatPrice = (seat, showtime) => {
+    // Handle both string format ("A1") and object format ({row: "A", number: 1})
+    const seatStr = typeof seat === 'string' ? seat : `${seat.row}${seat.number}`;
+    const rowLetter = seatStr.match(/^[A-Za-z]+/)?.[0]?.toUpperCase();
+    
+    if (!rowLetter) return 0;
+    
     if (!showtime?.theater?.pricing) {
-        const rowLetter = seat.match(/^[A-Za-z]+/)[0].toUpperCase();
         if (rowLetter >= 'A' && rowLetter <= 'F') return 300;
         if (rowLetter >= 'G' && rowLetter <= 'Q') return 200;
         return 100;
     }
 
-    const rowLetter = seat.match(/^[A-Za-z]+/)[0].toUpperCase();
-    
+    // Rest of the existing logic...
     if (showtime.theater.pricing.sections) {
         const section = showtime.theater.pricing.sections.find(s => 
             rowLetter >= s.rowRange.start && 

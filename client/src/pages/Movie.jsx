@@ -8,6 +8,10 @@ import {
   MapPinIcon,
   StarIcon,
   DocumentTextIcon,
+
+  GlobeAltIcon,
+
+
 } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
@@ -57,7 +61,13 @@ const Movie = () => {
         description: data.description,
         genre: data.genre,
         rating: parseFloat(data.rating),
-        length: (parseInt(data.lengthHr) || 0) * 60 + (parseInt(data.lengthMin) || 0)
+
+        length: (parseInt(data.lengthHr) || 0) * 60 + (parseInt(data.lengthMin) || 0),
+        language: data.language,
+        showType: data.showType
+
+        
+
       };
 
       setIsAddingMovie(true);
@@ -128,6 +138,15 @@ const Movie = () => {
                 {movie.genre}
               </div>
               <div className="flex items-center text-gray-300 text-sm mt-1">
+                <GlobeAltIcon className="w-4 h-4 mr-1" />
+                {movie.language}
+              </div>
+              <div className="flex items-center text-gray-300 text-sm mt-1">
+                <FilmIcon className="w-4 h-4 mr-1" />
+                {movie.showType}
+              </div>
+              <div className="flex items-center text-gray-300 text-sm mt-1">
+
                 <ClockIcon className="w-4 h-4 mr-1" />
                 {Math.floor(movie.length / 60)}h {movie.length % 60}m
               </div>
@@ -265,6 +284,53 @@ const Movie = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+
+                  <GlobeAltIcon className="w-4 h-4 text-[#ff416c]" />
+                  Language
+                </label>
+                <select
+                  {...register("language", { required: "Language is required" })}
+                  className="w-full px-4 py-3 rounded-lg bg-[#333] border border-[#444] text-white placeholder-gray-400 focus:ring-2 focus:ring-[#ff416c] focus:border-transparent transition-all"
+                >
+                  <option value="">Select Language</option>
+                  <option value="English">English</option>
+                  <option value="Hindi">Hindi</option>
+                  <option value="Tamil">Tamil</option>
+                  <option value="Telugu">Telugu</option>
+                  <option value="Malayalam">Malayalam</option>
+                  <option value="Kannada">Kannada</option>
+                  <option value="Other">Other</option>
+                </select>
+                {errors.language && (
+                  <p className="mt-1 text-sm text-red-400">
+                    {errors.language.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                  <FilmIcon className="w-4 h-4 text-[#ff416c]" />
+                  Show Type
+                </label>
+                <select
+                  {...register("showType", { required: "Show type is required" })}
+                  className="w-full px-4 py-3 rounded-lg bg-[#333] border border-[#444] text-white placeholder-gray-400 focus:ring-2 focus:ring-[#ff416c] focus:border-transparent transition-all"
+                >
+                  <option value="">Select Show Type</option>
+                  <option value="2D">2D</option>
+                  <option value="3D">3D</option>
+                  <option value="IMAX">IMAX</option>
+                  <option value="4DX">4DX</option>
+                </select>
+                {errors.showType && (
+                  <p className="mt-1 text-sm text-red-400">
+                    {errors.showType.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+
                   <ClockIcon className="w-4 h-4 text-[#ff416c]" />
                   Duration (Hours)
                 </label>

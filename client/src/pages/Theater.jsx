@@ -129,9 +129,17 @@ const Theater = () => {
                 <span className="px-3 py-1 bg-[#ff416c]/10 text-[#ff416c] rounded-full text-sm font-medium border border-[#ff416c]/30">
                   {movie.genre}
                 </span>
+                <span className="px-3 py-1 bg-[#ff416c]/10 text-[#ff416c] rounded-full text-sm font-medium border border-[#ff416c]/30">
+                {movie.showType}
+                </span>
+               
+                <span className="px-3 py-1 bg-[#ff416c]/10 text-[#ff416c] rounded-full text-sm font-medium border border-[#ff416c]/30">
+                  {movie.language}
+                </span>
                 <span className="px-3 py-1 bg-white/10 text-white rounded-full text-sm font-medium">
                   {movie.duration}
                 </span>
+               
                 <span className="px-3 py-1 bg-white/10 text-white rounded-full text-sm font-medium flex items-center">
                   <StarIcon className="w-4 h-4 mr-1 text-yellow-400" />
                   {movie.rating}
