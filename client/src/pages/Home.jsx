@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useEffect, useState, useCallback } from "react";
+import { useContext, useEffect, useState, useCallback, useRef } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "../components/Navbar";
 import { AuthContext } from "../context/AuthContext";
@@ -23,6 +23,7 @@ const Home = () => {
   const [featuredMovie, setFeaturedMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const scrollRef = useRef(null);
 
   const fetchMovies = useCallback(async () => {
     try {
@@ -67,6 +68,7 @@ const Home = () => {
   const handleViewTheater = useCallback((movieId) => {
     navigate(`/theater/${movieId}`);
   }, [navigate]);
+
 
   const features = [
     {
@@ -164,15 +166,15 @@ const Home = () => {
                 className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl font-bold flex items-center gap-3 hover:scale-105 transition-transform duration-300 shadow-lg shadow-purple-500/30 hover:shadow-pink-500/40"
               >
                 <TicketIcon className="w-6 h-6" />
-                <span>Get Tickets Now</span>
+                <a href="/Viewall">Get Tickets Now </a>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Features Section */}
-      <section className="py-16 px-4 bg-gray-900/50 backdrop-blur-sm">
+    
+      {/* <section className="py-16 px-4 bg-gray-900/50 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 
@@ -211,10 +213,10 @@ const Home = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Now Showing Section */}
-      <section className="py-16 px-4 bg-gray-900">
+      <section className="py-16 px-4 bg-gray-900" >
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
             <h2 
@@ -228,7 +230,7 @@ const Home = () => {
               data-aos-delay="50"
               className="flex items-center text-purple-300 hover:text-pink-300 group"
             >
-              View All <ChevronRightIcon className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+             <a href="/Viewall"> View All</a> <ChevronRightIcon className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
             </button>
           </div>
           
@@ -242,53 +244,70 @@ const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {movies.map((movie, index) => (
-                <div
-                  key={movie._id}
-                  data-aos="fade-up"
-                  data-aos-delay={(index % 4) * 50}
-                  className="group relative aspect-[2/3] rounded-lg overflow-hidden hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-purple-500/20"
-                >
-                  <img
-                    src={movie.img}
-                    alt={movie.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent p-4 flex flex-col justify-end">
-                    <div className="absolute top-4 left-4 bg-gray-900/80 text-purple-300 px-3 py-1 rounded-full text-sm flex items-center">
-                      <FilmIcon className="w-4 h-4 mr-1" />
-                      {movie.showType}
-                    </div>
-                    <div className="absolute top-4 right-4 bg-gray-900/80 text-purple-300 px-3 py-1 rounded-full text-sm flex items-center">
-                      <StarIcon className="w-4 h-4 mr-1" />
-                      {movie.rating?.toFixed(1)}
-                    </div>
-                    <div className="absolute bottom-4 right-4 bg-gray-900/80 text-purple-300 px-3 py-1 rounded-full text-sm flex items-center">
-                      <GlobeAltIcon className="w-4 h-4 mr-1" />
-                      {movie.language}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <h3 className="font-bold text-lg">{movie.name}</h3>
-                      <p className="text-purple-300 text-sm">{movie.genre}</p>
-                      <div className="flex justify-between text-xs text-gray-400">
-                        <span>{Math.floor(movie.length / 60)}h {movie.length % 60}m</span>
+            <div className="overflow-x-hidden pb-4">
+  <div 
+    className="flex gap-4 animate-scroll"
+    ref={scrollRef}
+    style={{ 
+      width: 'max-content',
+      animation: `scroll ${movies.length * 8}s linear infinite` 
+    }}
+  >
+    {[...movies, ...movies].map((movie, index) => (
+      <div
+        key={`${movie._id}-${index}`}
+        data-aos="fade-up"
+        data-aos-delay={(index % 4) * 50}
+        onClick={() => handleViewTheater(movie._id)}
+        className="cursor-pointer group relative aspect-[2/3] w-64 flex-shrink-0 rounded-lg overflow-hidden hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-purple-500/20"
+      >
+        <img
+          src={movie.img}
+          alt={movie.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent p-4 flex flex-col justify-end">
+          <div className="absolute top-4 left-4 bg-gray-900/80 text-purple-300 px-3 py-1 rounded-full text-sm flex items-center">
+            <FilmIcon className="w-4 h-4 mr-1" />
+            {movie.showType}
+          </div>
+          <div className="absolute top-4 right-4 bg-gray-900/80 text-purple-300 px-3 py-1 rounded-full text-sm flex items-center">
+            <StarIcon className="w-4 h-4 mr-1" />
+            {movie.rating?.toFixed(1)}
+          </div>
+          <div className="absolute bottom-4 right-4 bg-gray-900/80 text-purple-300 px-3 py-1 rounded-full text-sm flex items-center">
+            <GlobeAltIcon className="w-4 h-4 mr-1" />
+            {movie.language}
+          </div>
+          
+          <div className="space-y-2">
+            <h3 className="font-bold text-lg">{movie.name}</h3>
+            <p className="text-purple-300 text-sm">{movie.genre}</p>
+            <div className="flex justify-between text-xs text-gray-400">
+              <span>{Math.floor(movie.length / 60)}h {movie.length % 60}m</span>
+            </div>
+            <div className="w-full py-2.5 bg-purple-600 rounded-lg font-bold opacity-0 group-hover:opacity-100 transition-all duration-300 text-center">
+              View Showtimes
+            </div>
                       </div>
-                      <button
-                        onClick={() => handleViewTheater(movie._id)}
-                        className="w-full py-2.5 bg-purple-600 hover:bg-purple-700 rounded-lg font-bold opacity-0 group-hover:opacity-100 transition-all duration-300"
-                      >
-                        View Showtimes
-                      </button>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
         </div>
+
+        <style jsx>{`
+          @keyframes scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+          }
+          .animate-scroll {
+            animation: scroll linear infinite;
+          }
+        `}</style>
       </section>
 
       {/* Premium Experience Section */}
@@ -355,7 +374,7 @@ const Home = () => {
               <h4 className="text-lg font-bold text-purple-300">Support</h4>
               <nav className="space-y-2">
                 <a href="/faq" className="block text-gray-300 hover:text-purple-300">FAQ</a>
-                <a href="/AboutUs" className="block text-gray-300 hover:text-purple-300">About us</a>
+                <a href="/AaboutUs" className="block text-gray-300 hover:text-purple-300">About us</a>
                 <a href="#" className="block text-gray-300 hover:text-purple-300">CineVersesupport.gmail.com</a>
               </nav>
             </div>
