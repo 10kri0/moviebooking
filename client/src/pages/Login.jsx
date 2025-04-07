@@ -43,7 +43,7 @@ const Login = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent flex items-end p-8">
                         <div>
-                            <h1 className="text-5xl font-bold text-white mb-2">CINEM</h1>
+                            <h1 className="text-5xl font-bold text-white mb-2">CINEMA</h1>
                             <p className="text-xl text-white/80">Join our community of movie enthusiasts</p>
                             <p className="text-lg text-white/80">and unlock a world of cinematic</p>
                         </div>
