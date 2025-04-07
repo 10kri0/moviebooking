@@ -123,7 +123,55 @@ const Home = () => {
       <Navbar />
 
       {/* Hero Section */}
-    
+      {/* <div className="relative h-screen overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/50 z-10" />
+        <div 
+          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c')] bg-cover bg-center opacity-20"
+          style={{ willChange: 'transform' }}
+        />
+        
+        <div className="relative z-20 h-full flex flex-col justify-center items-center text-center px-4">
+          <div className="max-w-4xl space-y-6">
+            <div 
+              data-aos="zoom-in"
+              className="inline-flex items-center px-6 py-2 bg-purple-500/20 backdrop-blur-sm rounded-full text-purple-300 border border-purple-500/30 animate-pulse"
+            >
+              <SparklesIcon className="w-5 h-5 mr-2" />
+              <span className="text-sm font-semibold">NOW STREAMING</span>
+            </div>
+            
+            <h1 
+              data-aos="fade-up"
+              className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight bg-gradient-to-r from-purple-400 via-pink-300 to-rose-400 bg-clip-text text-transparent"
+            >
+              Experience Cinematic<br />
+              Magic Redefined
+            </h1>
+            
+            <p 
+              data-aos="fade-up"
+              data-aos-delay="100"
+              className="text-xl text-gray-300 max-w-2xl mx-auto"
+            >
+              Dive into a world of blockbuster entertainment with curated selections and premium viewing experiences.
+            </p>
+            
+            <div 
+              data-aos="fade-up"
+              data-aos-delay="200"
+              className="flex justify-center gap-4"
+            >
+              <button 
+                onClick={() => featuredMovie && handleViewTheater(featuredMovie._id)}
+                className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl font-bold flex items-center gap-3 hover:scale-105 transition-transform duration-300 shadow-lg shadow-purple-500/30 hover:shadow-pink-500/40"
+              >
+                <TicketIcon className="w-6 h-6" />
+                <a href="/Viewall">Get Tickets Now </a>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div> */}
 
     
       {/* <section className="py-16 px-4 bg-gray-900/50 backdrop-blur-sm">
